@@ -9,6 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use AmoCRM\Client\AmoCRMApiClient;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
+use App\Services\AmoCrmAuthService;
 
 class CreateAmoLeadListener implements ShouldQueue
 {
@@ -38,7 +39,9 @@ class CreateAmoLeadListener implements ShouldQueue
             config('services.amocrm.redirect_uri')
         );
 
-        $accessToken = cache()->get('amocrm_token');
+        $amoCrmAuthService = app(AmoCrmAuthService::class);
+        $accessToken = $amoCrmAuthService->getAccessToken();
+
 
         if ($accessToken) {
             $accessToken = unserialize($accessToken);
