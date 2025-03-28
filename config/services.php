@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    'yandex' => [
+        'api_key'   => env('YANDEX_API_KEY'),
+        'park_id'   => env('YANDEX_PARK_ID'),
+        'client_id' => env('YANDEX_CLIENT_ID'),
+        'api_url'   => env('YANDEX_API_URL'),
+    ],
+
+    'amocrm' => [
+        'client_id'     => env('AMOCRM_CLIENT_ID'),
+        'client_secret' => env('AMOCRM_CLIENT_SECRET'),
+        'redirect_uri'  => env('AMOCRM_REDIRECT_URI'),
+        'subdomain'     => env('AMOCRM_SUBDOMAIN'),
+    ]
 ];
