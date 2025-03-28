@@ -52,7 +52,7 @@ class ProcessYandexDriver implements ShouldQueue
                 'phone'      => json_encode($driver['driver_profile']['phones'] ?? []),
                 'balance'    => $driver['account']['balance'] ?? 0.0,
                 'car'        => json_encode($driver['car'] ?? []),
-                'active'     => 'new',
+                'active'     => 0,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
