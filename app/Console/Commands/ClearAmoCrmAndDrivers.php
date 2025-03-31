@@ -2,23 +2,21 @@
 
 namespace App\Console\Commands;
 
-use App\Services\AmoCrmAuthService;
-use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
 use App\Models\Driver;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
+use App\Services\AmoCrmAuthService;
 
 class ClearAmoCrmAndDrivers extends Command
 {
     protected $signature = 'app:clear-amocrm-drivers';
-    protected $description = 'Удаляет все лиды в amoCRM и очищает базу drivers';
+    protected $description = 'Удаляет все лиды из amoCRM и очищает таблицу drivers';
 
     public function handle()
     {
-        $this->info('Начинаем очистку...');
+        $this->info('Начинаем очистку amoCRM и таблицы drivers...');
 
         $this->clearAmoCrmLeads();
-
         $this->clearDriversTable();
 
         $this->info('Очистка завершена.');
@@ -29,37 +27,65 @@ class ClearAmoCrmAndDrivers extends Command
         $amoCrmAuthService = app(AmoCrmAuthService::class);
         $accessToken = $amoCrmAuthService->getAccessToken();
 
-        $apiUrl = 'https://tomxemmings.amocrm.ru/api/v4/leads';
+        if (!$accessToken) {
+            $this->error('Токен доступа не найден.');
+            return;
+        }
+
+        $accessToken = unserialize($accessToken);
+
+        $domain = config('services.amocrm.subdomain') . '.amocrm.ru';
+        $baseUrl = "https://{$domain}/api/v4/leads";
         $headers = [
-            'Authorization' => 'Bearer ' . $accessToken,
+            'Authorization' => 'Bearer ' . $accessToken->getToken(),
             'Content-Type'  => 'application/json',
         ];
 
-        $response = Http::withHeaders($headers)->get($apiUrl, ['limit' => 250]);
-        if (!$response->successful()) {
-            $this->error('Ошибка получения лидов из amoCRM: ' . $response->body());
-            return;
-        }
+        $page = 1;
+        $limit = 250;
+        $totalDeleted = 0;
 
-        $leads = $response->json()['_embedded']['leads'] ?? [];
-        if (empty($leads)) {
-            $this->info('Лидов в amoCRM не найдено.');
-            return;
-        }
+        do {
+            $response = Http::withHeaders($headers)->get($baseUrl, [
+                'limit' => $limit,
+                'page'  => $page,
+            ]);
 
-        $leadIds = array_column($leads, 'id');
-        $deleteResponse = Http::withHeaders($headers)->delete($apiUrl, $leadIds);
+            if (!$response->successful()) {
+                $this->error('Ошибка при получении лидов: ' . $response->body());
+                break;
+            }
 
-        if ($deleteResponse->successful()) {
-            $this->info('Лиды в amoCRM успешно удалены.');
-        } else {
-            $this->error('Ошибка удаления лидов: ' . $deleteResponse->body());
-        }
+            $leads = $response->json()['_embedded']['leads'] ?? [];
+
+            if (empty($leads)) {
+                break;
+            }
+
+            $payload = collect($leads)->map(fn ($lead) => [
+                'id' => $lead['id'],
+                '_delete' => true,
+            ])->values()->toArray();
+
+            $deleteResponse = Http::withHeaders($headers)->patch($baseUrl, $payload);
+
+            if ($deleteResponse->successful()) {
+                $this->info("Удалено " . count($payload) . " лидов на странице {$page}.");
+                $totalDeleted += count($payload);
+            } else {
+                $this->error("Ошибка удаления лидов на странице {$page}: " . $deleteResponse->body());
+                break;
+            }
+
+            $page++;
+        } while (count($leads) === $limit);
+
+        $this->info("Всего удалено лидов: {$totalDeleted}");
     }
 
     private function clearDriversTable()
     {
         Driver::truncate();
-        $this->info('Все записи в таблице drivers удалены.');
+        $this->info('Таблица drivers очищена.');
     }
 }
