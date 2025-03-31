@@ -39,7 +39,6 @@ class CreateAmoLeadListener implements ShouldQueue
         $amoCrmAuthService = app(AmoCrmAuthService::class);
         $accessToken = $amoCrmAuthService->getAccessToken();
 
-
         if ($accessToken) {
             $accessToken = unserialize($accessToken);
         }
