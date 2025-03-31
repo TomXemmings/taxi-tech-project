@@ -29,9 +29,6 @@ class CreateAmoLeadListener implements ShouldQueue
     public function handle(DriverCreated $event)
     {
         $driver = $event->driver;
-        Log::info("Слушатель CreateAmoLeadListener вызван для водителя: {$driver->name}");
-
-        Log::info("Создание лида для водителя: {$driver->name}");
 
         $apiClient = new AmoCRMApiClient(
             config('services.amocrm.client_id'),
@@ -65,7 +62,6 @@ class CreateAmoLeadListener implements ShouldQueue
             if ($leadId) {
                 $driver->lead_id = $leadId;
                 $driver->save();
-                Log::info("Лид ID: {$leadId} сохранен для водителя: {$driver->name}");
             } else {
                 Log::warning("Лид создан, но ID не получен.");
             }

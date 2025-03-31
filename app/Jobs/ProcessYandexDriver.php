@@ -41,7 +41,6 @@ class ProcessYandexDriver implements ShouldQueue
             }
 
             if (in_array($yandexId, $existingYandexIds)) {
-                Log::info("Водитель с yandex_id {$yandexId} уже существует, пропущен.");
                 continue;
             }
 
