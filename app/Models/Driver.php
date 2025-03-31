@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\DriverStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Driver extends Model
@@ -11,8 +12,9 @@ class Driver extends Model
     protected $fillable = ['name', 'phone', 'balance', 'car', 'active', 'surname'];
 
     protected $casts = [
-        'car'   => 'array',
-        'phone' => 'string',
+        'car'    => 'array',
+        'phone'  => 'string',
+        'active' => DriverStatus::class
     ];
 
 }

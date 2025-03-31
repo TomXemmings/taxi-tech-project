@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\DriverStatus;
 use Illuminate\Http\Request;
 use App\Models\Driver;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +20,7 @@ class AmoCrmWebhookController extends Controller
             $status = $leadData['status_id'] ?? null;
 
             if ($leadId && $status) {
-                $updated = Driver::where('lead_id', $leadId)->update(['active' => 1]);
+                $updated = Driver::where('lead_id', $leadId)->update(['active' => DriverStatus::ACTIVE]);
 
                 if ($updated) {
                     Log::info("Водитель с lead_id {$leadId} активирован.");

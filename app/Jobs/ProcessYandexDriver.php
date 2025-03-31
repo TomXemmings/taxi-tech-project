@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Enums\DriverStatus;
 use App\Models\Driver;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -51,7 +52,7 @@ class ProcessYandexDriver implements ShouldQueue
                 'phone'      => json_encode($driver['driver_profile']['phones'] ?? []),
                 'balance'    => $driver['account']['balance'] ?? 0.0,
                 'car'        => json_encode($driver['car'] ?? []),
-                'active'     => 0,
+                'active'     => DriverStatus::INACTIVE,
                 'created_at' => now(),
                 'updated_at' => now(),
             ];

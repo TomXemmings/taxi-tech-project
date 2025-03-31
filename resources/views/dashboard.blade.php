@@ -97,7 +97,7 @@
                             <td class="p-2 border">${driver.surname ?? '-'}</td>
                             <td class="p-2 border">${formatCar(driver.car)}</td>
                             <td class="p-2 border">${driver.phone ?? '-'}</td>
-                            <td class="p-2 border">${driver.active ?? '-'}</td>
+                            <td class="p-2 border">${driver.active ? 'Активен' : 'Неактивен'}</td>
                             <td class="p-2 border text-center">
                                 <a href="${driver.lead_id ? 'https://tomxemmings.amocrm.ru/leads/detail/' + driver.lead_id : 'https://tomxemmings.amocrm.ru/leads'}"
                                    target="_blank"
