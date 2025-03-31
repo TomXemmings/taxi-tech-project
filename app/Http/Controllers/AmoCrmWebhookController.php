@@ -19,7 +19,7 @@ class AmoCrmWebhookController extends Controller
             $status = $leadData['status_id'] ?? null;
 
             if ($leadId && $status) {
-                if ($status == 142) { // Убедись, что 142 - это правильный статус
+                if ($status == 142) {
                     $updated = Driver::where('lead_id', $leadId)->update(['active' => 1]);
 
                     if ($updated) {
