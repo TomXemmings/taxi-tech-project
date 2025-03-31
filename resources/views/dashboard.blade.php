@@ -99,8 +99,15 @@
                             <td class="p-2 border">${driver.phone ?? '-'}</td>
                             <td class="p-2 border">${driver.active ?? '-'}</td>
                             <td class="p-2 border text-center">
+                                <a href="${driver.lead_id ? 'https://tomxemmings.amocrm.ru/leads/detail/' + driver.lead_id : 'https://tomxemmings.amocrm.ru/leads'}"
+                                   target="_blank"
+                                   class="bg-green-500 text-white px-2 py-1 rounded">
+                                    Перейти в amoCRM
+                                </a>
                                 <button class="delete-btn bg-red-500 text-white px-2 py-1 rounded"
-                                        data-id="${driver.id}">Удалить</button>
+                                        data-id="${driver.id}">
+                                    Удалить
+                                </button>
                             </td>
                         </tr>
                     `);
@@ -133,5 +140,26 @@
     $(document).on('click', '#search-btn', function() {
         let searchValue = $('#search').val().trim();
         loadDrivers(1, searchValue);
+    });
+
+    $(document).on('click', '.delete-btn', function() {
+        let driverId = $(this).data('id');
+
+        if (!confirm('Вы уверены, что хотите удалить водителя?')) return;
+
+        $.ajax({
+            url: `/drivers/${driverId}`,
+            type: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(response) {
+                alert(response.message);
+                loadDrivers();
+            },
+            error: function(xhr) {
+                alert('Ошибка при удалении водителя');
+            }
+        });
     });
 </script>

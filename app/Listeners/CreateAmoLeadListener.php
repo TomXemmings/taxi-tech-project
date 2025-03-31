@@ -59,11 +59,20 @@ class CreateAmoLeadListener implements ShouldQueue
 
         $leadsService = $apiClient->leads();
         try {
-            $leadsService->addOne($lead);
-            Log::info("Лид создан в amoCRM для водителя: {$driver->name}");
+            $createdLead = $leadsService->addOne($lead);
+            $leadId      = $createdLead->getId();
+
+            if ($leadId) {
+                $driver->lead_id = $leadId;
+                $driver->save();
+                Log::info("Лид ID: {$leadId} сохранен для водителя: {$driver->name}");
+            } else {
+                Log::warning("Лид создан, но ID не получен.");
+            }
         } catch (\Exception $e) {
             Log::error("Ошибка создания лида в amoCRM: " . $e->getMessage());
         }
+
     }
 
 }

@@ -34,7 +34,6 @@ class AmoCrmAuthController extends Controller
 
             $apiClient->setAccountBaseDomain(config('services.amocrm.subdomain') . '.amocrm.ru');
 
-
             $accessToken = $apiClient->getOAuthClient()->getAccessTokenByCode($request->get('code'));
 
             Session::put('amocrm_token', $accessToken->getToken());

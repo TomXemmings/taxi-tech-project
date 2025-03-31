@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AmoCrmWebhookController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
@@ -24,5 +25,8 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/oauth/redirect', [AmoCrmAuthController::class, 'redirectToAmoCRM']);
 Route::get('/oauth/callback', [AmoCrmAuthController::class, 'handleCallback']);
+
+Route::post('/amocrm/webhook', [AmoCrmWebhookController::class, 'handleWebhook']);
+
 
 require __DIR__.'/auth.php';
