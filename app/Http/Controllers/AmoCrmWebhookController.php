@@ -19,16 +19,12 @@ class AmoCrmWebhookController extends Controller
             $status = $leadData['status_id'] ?? null;
 
             if ($leadId && $status) {
-                if ($status == 142) {
-                    $updated = Driver::where('lead_id', $leadId)->update(['active' => 1]);
+                $updated = Driver::where('lead_id', $leadId)->update(['active' => 1]);
 
-                    if ($updated) {
-                        Log::info("Водитель с lead_id {$leadId} активирован.");
-                    } else {
-                        Log::warning("Водитель с lead_id {$leadId} не найден.");
-                    }
+                if ($updated) {
+                    Log::info("Водитель с lead_id {$leadId} активирован.");
                 } else {
-                    Log::info("Лид {$leadId} не в нужном статусе ({$status}).");
+                    Log::warning("Водитель с lead_id {$leadId} не найден.");
                 }
             } else {
                 Log::warning("Не удалось получить lead_id или status_id.");
