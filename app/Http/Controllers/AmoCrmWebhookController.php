@@ -12,22 +12,31 @@ class AmoCrmWebhookController extends Controller
     {
         Log::info('Получен вебхук от amoCRM', $request->all());
 
-        $leadId = $request->input('leads.status.0.id');
-        $status = $request->input('leads.status.0.status_id');
+        $leadData = $request->input('leads.update.0');
 
-        if ($leadId && $status) {
-            if ($status == 142) {
-                $updated = Driver::where('lead_id', $leadId)->update(['active' => 1]);
+        if ($leadData) {
+            $leadId = $leadData['id'] ?? null;
+            $status = $leadData['status_id'] ?? null;
 
-                if ($updated) {
-                    Log::info("Водитель с lead_id {$leadId} активирован.");
+            if ($leadId && $status) {
+                if ($status == 142) { // Убедись, что 142 - это правильный статус
+                    $updated = Driver::where('lead_id', $leadId)->update(['active' => 1]);
+
+                    if ($updated) {
+                        Log::info("Водитель с lead_id {$leadId} активирован.");
+                    } else {
+                        Log::warning("Водитель с lead_id {$leadId} не найден.");
+                    }
                 } else {
-                    Log::warning("Водитель с lead_id {$leadId} не найден.");
+                    Log::info("Лид {$leadId} не в нужном статусе ({$status}).");
                 }
+            } else {
+                Log::warning("Не удалось получить lead_id или status_id.");
             }
+        } else {
+            Log::warning("Вебхук не содержит нужных данных.");
         }
 
         return response()->json(['status' => 'ok']);
     }
-
 }
