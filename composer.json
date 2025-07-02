@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.2",
         "amocrm/amocrm-api-library": "^1.13",
+        "chrome-php/chrome": "*",
         "laravel/framework": "^11.31",
         "laravel/tinker": "^2.9"
     },
