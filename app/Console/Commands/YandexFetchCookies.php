@@ -58,7 +58,7 @@ class YandexFetchCookies extends Command
     {
         # Start browser
         $browser = (new BrowserFactory(
-            env('CHROME_BIN', 'C:\Program Files\Chromium\chromium.exe')
+            env('CHROME_BIN', '/usr/bin/chromium-browser')
         ))->createBrowser([
             'headless'   => ! $this->option('headful'),
             'noSandbox'  => true,
