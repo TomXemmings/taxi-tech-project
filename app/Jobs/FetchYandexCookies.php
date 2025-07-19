@@ -51,7 +51,10 @@ class FetchYandexCookies implements ShouldQueue
             $page->navigate('https://fleet.yandex.ru/')->waitForNavigation();
 
             $this->waitForSelector($page, 'a')->click();
-            $page->waitForReload('load', 100000);
+            $page->waitForReload('load', 30000);
+            $this->task->update([
+                'cookies' => 'Go to fleet'
+            ]);
 
             # Login
             $this->waitForSelector($page, '#passp-field-login')->click();
