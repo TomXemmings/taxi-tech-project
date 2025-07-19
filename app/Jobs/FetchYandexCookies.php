@@ -50,9 +50,10 @@ class FetchYandexCookies implements ShouldQueue
             # Create page
             $page = $browser->createPage();
             $page->navigate('https://fleet.yandex.ru/')->waitForNavigation();
+            fwrite(STDOUT, "GO TO FLEET");
 
             $this->waitForSelector($page, 'a')->click();
-            $page->waitForReload('load', 40000);
+//            $page->waitForReload('load', 40000);
             $this->task->update([
                 'cookies' => 'Go to fleet'
             ]);
