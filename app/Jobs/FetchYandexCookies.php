@@ -44,6 +44,7 @@ class FetchYandexCookies implements ShouldQueue
             ))->createBrowser([
                 'headless'   => true,
                 'noSandbox'  => true,
+                'windowSize' => [1280, 800],
             ]);
 
             # Create page
