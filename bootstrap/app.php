@@ -25,5 +25,5 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withSchedule(function (Schedule $schedule) {
-        $schedule->command('app:fetch-yandex-drivers')->everyMinute();
+//        $schedule->command('app:fetch-yandex-drivers')->everyMinute();
     })->create();
