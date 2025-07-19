@@ -40,6 +40,12 @@ return [
         'park_id'   => env('YANDEX_PARK_ID'),
         'client_id' => env('YANDEX_CLIENT_ID'),
         'api_url'   => env('YANDEX_API_URL'),
+        'auth_key'  => env('YANDEX_AUTH_KEY'),
+    ],
+
+    'taxitech' => [
+        'api_key'     => env('TAXITECH_API_KEY'),
+        'get_sms_url' => env('TAXITECH_GET_SMS_URL'),
     ],
 
     'amocrm' => [
@@ -47,5 +53,5 @@ return [
         'client_secret' => env('AMOCRM_CLIENT_SECRET'),
         'redirect_uri'  => env('AMOCRM_REDIRECT_URI'),
         'subdomain'     => env('AMOCRM_SUBDOMAIN'),
-    ]
+    ],
 ];

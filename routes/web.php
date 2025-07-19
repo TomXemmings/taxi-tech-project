@@ -1,10 +1,12 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\AmoCrmWebhookController;
 use App\Http\Controllers\DriverController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AmoCrmAuthController;
+use App\Http\Controllers\YandexController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -28,5 +30,8 @@ Route::get('/oauth/callback', [AmoCrmAuthController::class, 'handleCallback']);
 
 Route::post('/amocrm/webhook', [AmoCrmWebhookController::class, 'handleWebhook']);
 
-
+Route::middleware('yandex.auth')->group(function () {
+    Route::post('/api/yandex/auth',        [YandexController::class, 'auth']);
+    Route::post('/api/yandex/get-cookies', [YandexController::class, 'getCookies']);
+});
 require __DIR__.'/auth.php';

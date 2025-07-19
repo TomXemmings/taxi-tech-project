@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use HeadlessChromium\Cookies\CookiesCollection;
 use HeadlessChromium\Page;
 use Illuminate\Console\Command;
 use HeadlessChromium\BrowserFactory;
@@ -47,7 +48,7 @@ class YandexFetchCookies extends Command
             if (microtime(true) - $start > $timeout) {
                 throw new \RuntimeException("DOM not found with selector: {$selector} in {$timeoutMs} ms");
             }
-            usleep(300_000);
+            usleep(900_000);
         }
     }
 
@@ -58,7 +59,7 @@ class YandexFetchCookies extends Command
     {
         # Start browser
         $browser = (new BrowserFactory(
-            env('CHROME_BIN', '/usr/bin/chromium-browser')
+            env('CHROME_BIN', 'C:\Program Files\Chromium\chromium.exe')
         ))->createBrowser([
             'headless'   => ! $this->option('headful'),
             'noSandbox'  => true,
@@ -88,6 +89,33 @@ class YandexFetchCookies extends Command
 
             # SMS
             $this->waitForSelector($page, 'button[data-t="button:action"')->click();
+//            $page->waitForReload('DOMContentLoaded', 30000);
+            sleep(10);
+            $element = $page->dom()->querySelector('h1');
+            $text    = $element->getText();
+            $this->info($text);
+
+            # If there is ask other way to auth
+            if ($text == 'Введите последние 6&nbsp;цифр входящего номера' or 'Подтвердите кодом из&nbsp;сообщения в&nbsp;Telegram') {
+                $this->info('Просит 6 цифр входящего номера ➜ переключаемся на SMS');
+
+                # Wait until can ask other ways to auth
+                sleep(70);
+                $this->waitForSelector($page, 'button[data-t="button:pseudo"]')->click();
+                $this->info('Открылся список способов входа');
+
+                $page->evaluate(<<<'JS'
+                    (() => {
+                        const span = document.querySelector('span.ButtonWithOptions-icon.icon-sms');
+                        if (span) {
+                            span.closest('button')?.click();
+                        }
+                    })();
+                JS);
+                $this->info('Выбран способ «SMS»');
+            }
+
+            # SMS
             $smsInput = $this->waitForSelector($page, '#passp-field-phoneCode', 60000);
             $smsCode  = $this->ask('Введите SMS-код Яндекса');
             $smsInput->click();
@@ -96,13 +124,11 @@ class YandexFetchCookies extends Command
             $page->waitForReload('load', 30000);
             $this->info('Открыт https://fleet.yandex.ru/');
 
-            # Save cookies
+            # Get cookies
             $cookies = $page->getAllCookies();
-            Storage::disk('local')->put(
-                'yandex_cookies.json',
-                json_encode($cookies, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES)
-            );
-            $this->info('Cookies сохранены: storage/app/yandex_cookies.json');
+
+            $this->info(json_encode($cookies, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+            $this->info(print_r($cookies, true));
 
             return self::SUCCESS;
 
@@ -115,5 +141,3 @@ class YandexFetchCookies extends Command
         }
     }
 }
-
-

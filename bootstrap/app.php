@@ -14,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens(except: [
             'amocrm/webhook',
+            'api/yandex/auth',
+            'api/yandex/get-cookies',
+        ]);
+        $middleware->alias([
+            'yandex.auth' => \App\Http\Middleware\CheckYandexAuthKey::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
