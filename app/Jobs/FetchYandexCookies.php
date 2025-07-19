@@ -41,9 +41,7 @@ class FetchYandexCookies implements ShouldQueue
             # Start browser
             $browser = (new BrowserFactory(
                 env('CHROME_BIN', 'C:\Program Files\Chromium\chromium.exe')
-            ))->createBrowser([
-                'noSandbox' => true,
-            ]);
+            ))->createBrowser([]);
 
             # Create page
             $page = $browser->createPage();
