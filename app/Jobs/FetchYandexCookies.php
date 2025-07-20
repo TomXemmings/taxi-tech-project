@@ -41,10 +41,6 @@ class FetchYandexCookies implements ShouldQueue
         $this->task->update(['status' => 'running']);
 
         try {
-            Artisan::call('app:yandex-fetch-cookies', [
-                '--headful'=> false,                 // или true, если нужно окно
-            ]);
-
             # Start browser
             $browser = (new BrowserFactory)->createBrowser([
                 'binary' => '/snap/bin/chromium',
