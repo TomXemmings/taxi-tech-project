@@ -97,7 +97,7 @@ class FetchYandexCookies implements ShouldQueue
             Log::info('page_text_2_password '.$text);
 
             # Password
-            $passwordInput = $this->waitForSelector($page, '#passp-field-password', 15000);
+            $passwordInput = $this->waitForSelector($page, '#passp-field-passwd', 15000);
             $page->evaluate('arguments[0].scrollIntoView()', [$passwordInput->getNodeId()]);
             $page->evaluate('arguments[0].focus()', [$passwordInput->getNodeId()]);
             $page->evaluate('arguments[0].value = ""', [$passwordInput->getNodeId()]);
