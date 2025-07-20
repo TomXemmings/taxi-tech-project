@@ -73,14 +73,14 @@ class FetchYandexCookies implements ShouldQueue
             sleep(5);
 
             # Login
-//            $login = $this->waitForSelector($page, '#passp-field-login');
-//            $login->click();
-            $loginInput = $this->waitForSelector($page, '#passp-field-login', 15000);
-            $page->evaluate('arguments[0].scrollIntoView()', [$loginInput->getNodeId()]);
-            $page->evaluate('arguments[0].focus()', [$loginInput->getNodeId()]);
-            $page->evaluate('arguments[0].value = ""', [$loginInput->getNodeId()]);
-
-            $loginInput->sendKeys($this->login);
+            $login = $this->waitForSelector($page, '#passp-field-login');
+            $login->click();
+//            $loginInput = $this->waitForSelector($page, '#passp-field-login', 15000);
+//            $page->evaluate('arguments[0].scrollIntoView()', [$loginInput->getNodeId()]);
+//            $page->evaluate('arguments[0].focus()', [$loginInput->getNodeId()]);
+//            $page->evaluate('arguments[0].value = ""', [$loginInput->getNodeId()]);
+//
+//            $loginInput->sendKeys($this->login);
 
             sleep(5);
             $element = $page->dom()->querySelector('h1');
