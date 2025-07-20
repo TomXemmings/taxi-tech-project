@@ -83,6 +83,9 @@ class FetchYandexCookies implements ShouldQueue
             $loginInput->sendKeys($this->login);
 
             sleep(5);
+            $element = $page->dom()->querySelector('h1');
+            $text    = $element->getText();
+            Log::info('page_text'.$text);
 
             # Password
             $passwordInput = $this->waitForSelector($page, '#passp-field-password', 15000);
