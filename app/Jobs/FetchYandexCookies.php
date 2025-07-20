@@ -141,11 +141,22 @@ class FetchYandexCookies implements ShouldQueue
             $text    = $element->getText();
             Log::info('page_text_5 '.$text);
 
+            $textPrompts = [
+                'Введите последние 6&nbsp;цифр входящего номера',
+                'Подтвердите кодом из&nbsp;сообщения в&nbsp;Telegram',
+                'Enter the last 6&nbsp;digits of&nbsp;the calling number',
+                'Enter the confirmation code you received in&nbsp;Telegram',
+            ];
             # If there is ask other way to auth
-            if ($text == 'Введите последние 6&nbsp;цифр входящего номера' or 'Подтвердите кодом из&nbsp;сообщения в&nbsp;Telegram' or 'Enter the last 6&nbsp;digits of&nbsp;the calling number' or 'Enter the confirmation code you received in&nbsp;Telegram') {
+            if (in_array($text, $textPrompts, true)) {
                 # Wait until can ask other ways to auth
                 Log::info('It gets to FORK');
                 sleep(70);
+
+                $element = $page->dom()->querySelector('h1');
+                $text    = $element->getText();
+                Log::info('page_text_6 '.$text);
+
                 $this->waitForSelector($page, 'button[data-t="button:pseudo"]')->click();
 
                 $page->evaluate(<<<'JS'
