@@ -71,6 +71,7 @@ class FetchYandexCookies implements ShouldQueue
 
             $page->navigate($loginUrl)->waitForNavigation();
             $page->getSession()->sendMessageSync(new Message('Page.bringToFront'));
+            sleep(5);
 
             # Login
             $this->waitForSelector($page, '#passp-field-login')->click();
