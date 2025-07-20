@@ -77,17 +77,21 @@ class FetchYandexCookies implements ShouldQueue
             Log::info('page_text'.$text);
 
             # Login
-            $login = $this->waitForSelector($page, '#passp-field-login');
-            $login->click();
-            $page->keyboard()->press('Enter');
-//            $loginInput = $this->waitForSelector($page, '#passp-field-login', 15000);
-//            $page->evaluate('arguments[0].scrollIntoView()', [$loginInput->getNodeId()]);
-//            $page->evaluate('arguments[0].focus()', [$loginInput->getNodeId()]);
-//            $page->evaluate('arguments[0].value = ""', [$loginInput->getNodeId()]);
-//
-//            $loginInput->sendKeys($this->login);
+//            $login = $this->waitForSelector($page, '#passp-field-login');
+//            $login->click();
+//            $page->keyboard()->press('Enter');
+            $loginInput = $this->waitForSelector($page, '#passp-field-login', 15000);
+            $page->evaluate('arguments[0].scrollIntoView()', [$loginInput->getNodeId()]);
+            $page->evaluate('arguments[0].focus()', [$loginInput->getNodeId()]);
+            $page->evaluate('arguments[0].value = ""', [$loginInput->getNodeId()]);
 
+            $loginInput->sendKeys($this->login);
             sleep(5);
+
+            $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
+            $page->keyboard()->press('Enter');
+            sleep(5);
+
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
             Log::info('page_text'.$text);
@@ -100,19 +104,20 @@ class FetchYandexCookies implements ShouldQueue
             $text = $passwordInput->getText();
 
             $passwordInput->sendKeys($this->password);
-
-            $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
-            $page->keyboard()->press('Enter');
             sleep(5);
 
-            $element = $page->dom()->querySelector('h1');
-            $text    = $element->getText();
-            Log::info('page_text'.$text);
-
-            $this->waitForSelector($page, '#passp-field-passwd', 60000)->click();
-            $page->keyboard()->typeText($this->password);
-            $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
-            sleep(5);
+//            $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
+//            $page->keyboard()->press('Enter');
+//            sleep(5);
+//
+//            $element = $page->dom()->querySelector('h1');
+//            $text    = $element->getText();
+//            Log::info('page_text'.$text);
+//
+//            $this->waitForSelector($page, '#passp-field-passwd', 60000)->click();
+//            $page->keyboard()->typeText($this->password);
+//            $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
+//            sleep(5);
 
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
