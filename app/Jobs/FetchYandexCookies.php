@@ -73,19 +73,12 @@ class FetchYandexCookies implements ShouldQueue
             sleep(5);
 
             # Login
-            $loginInput = $this->waitForSelector($page, '#passp-field-login', 15000);
-
-// 1) скроллим в зону видимости (бывает off-screen в iframe)
-            $page->evaluate('arguments[0].scrollIntoView()', [$loginInput->getNodeId()]);
-
-// 2) даём явный focus() через JS (React его слушает)
-            $page->evaluate('arguments[0].focus()', [$loginInput->getNodeId()]);
-
-// 3) на всякий случай очищаем value
-            $page->evaluate('arguments[0].value = ""', [$loginInput->getNodeId()]);
-
-// 4) печатаем именно в этот элемент
-            $loginInput->sendKeys($this->login);
+            $login = $this->waitForSelector($page, '#passp-field-login');
+            $login->click();
+            $text = $login->getText();
+            Log::info('login_text_1'.$text);
+            $page->keyboard()->typeText($this->login);
+            Log::info('login_text_2'.$text);
             sleep(5);
 
             # Password
@@ -94,7 +87,7 @@ class FetchYandexCookies implements ShouldQueue
             sleep(5);
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
-            Log::info($text);
+            Log::info('page_text'.$text);
 
             $this->waitForSelector($page, '#passp-field-passwd', 60000)->click();
             $page->keyboard()->typeText($this->password);
