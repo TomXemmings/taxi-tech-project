@@ -86,6 +86,7 @@ class FetchYandexCookies implements ShouldQueue
 // 3) на всякий случай очищаем value
             $page->evaluate('arguments[0].value = ""', [$loginInput->getNodeId()]);
 
+            $text = $loginInput->getText();
             Log::info('login_text_1'.$text);
 // 4) печатаем именно в этот элемент
             $loginInput->sendKeys($this->login);
