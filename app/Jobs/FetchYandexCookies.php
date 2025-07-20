@@ -65,28 +65,11 @@ class FetchYandexCookies implements ShouldQueue
 
             $this->waitForSelector($page, 'a')->click();
 
-            $start     = microtime(true);
-            $loginPage = null;
+            $loginUrl = $page->evaluate(
+                'document.querySelector("a").href'
+            )->getReturnValue();
 
-            while ((microtime(true) - $start) < 10) {
-                foreach ($browser->getPages() as $p) {
-                    try {
-                        $url = $p->evaluate('location.href')->getReturnValue();
-                        if (str_contains($url, 'passport.yandex')) {
-                            $loginPage = $p;
-                            break 2;
-                        }
-                    } catch (\Throwable) {
-                    }
-                }
-                usleep(200_000);
-            }
-
-            if (!$loginPage) {
-                throw new \RuntimeException('Login tab did not open in 10 s');
-            }
-
-            $page = $loginPage;
+            $page->navigate($loginUrl)->waitForNavigation();
             $page->getSession()->sendMessageSync(new Message('Page.bringToFront'));
 
             # Login
