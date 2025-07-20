@@ -78,10 +78,12 @@ class FetchYandexCookies implements ShouldQueue
 
             # Password
             $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
+            sleep(5);
 
-            $this->waitForSelector($page, '#passp-field-passwd', 25000)->click();
+            $this->waitForSelector($page, '#passp-field-passwd', 30000)->click();
             $page->keyboard()->typeText($this->password);
             $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
+            sleep(5);
 
             # SMS
             $this->waitForSelector($page, 'button[data-t="button:action"')->click();
@@ -105,6 +107,7 @@ class FetchYandexCookies implements ShouldQueue
                         }
                     })();
                 JS);
+                sleep(5);
             }
 
             # SMS input
