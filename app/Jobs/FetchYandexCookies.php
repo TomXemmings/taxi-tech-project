@@ -44,17 +44,18 @@ class FetchYandexCookies implements ShouldQueue
             # Start browser
             $browser = (new BrowserFactory)->createBrowser([
                 'binary' => '/snap/bin/chromium',
-
                 'headless' => true,
-
                 'chromeArguments' => [
-                    '--user-data-dir=/tmp/chrome-profile',
+                    '--no-sandbox',
+                    '--disable-setuid-sandbox',
+                    '--user-data-dir=' . sys_get_temp_dir() . '/chrome-' . uniqid(),
                     '--single-process',
                     '--renderer-process-limit=1',
                     '--disable-dev-shm-usage',
                     '--disable-gpu',
                     '--no-zygote',
                 ],
+                'debugLogger' => 'php://stdout',
             ]);
 
             # Create page
