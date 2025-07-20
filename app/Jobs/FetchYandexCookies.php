@@ -79,10 +79,9 @@ class FetchYandexCookies implements ShouldQueue
 
             # Password
             $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
-            $page->keyboard()->press('Enter');
             sleep(5);
 
-            $this->waitForSelector($page, '#passp-field-passwd', 30000)->click();
+            $this->waitForSelector($page, '#passp-field-passwd', 60000)->click();
             $page->keyboard()->typeText($this->password);
             $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
             sleep(5);
