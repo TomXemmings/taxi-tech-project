@@ -73,8 +73,19 @@ class FetchYandexCookies implements ShouldQueue
             sleep(5);
 
             # Login
-            $this->waitForSelector($page, '#passp-field-login')->click();
-            $page->keyboard()->typeText($this->login);
+            $loginInput = $this->waitForSelector($page, '#passp-field-login', 15000);
+
+// 1) скроллим в зону видимости (бывает off-screen в iframe)
+            $page->evaluate('arguments[0].scrollIntoView()', [$loginInput->getNodeId()]);
+
+// 2) даём явный focus() через JS (React его слушает)
+            $page->evaluate('arguments[0].focus()', [$loginInput->getNodeId()]);
+
+// 3) на всякий случай очищаем value
+            $page->evaluate('arguments[0].value = ""', [$loginInput->getNodeId()]);
+
+// 4) печатаем именно в этот элемент
+            $loginInput->sendKeys($this->login);
             sleep(5);
 
             # Password
