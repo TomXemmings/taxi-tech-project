@@ -8,6 +8,7 @@ use HeadlessChromium\BrowserFactory;
 use HeadlessChromium\Dom\Node;
 use HeadlessChromium\Page;
 use HeadlessChromium\Cookies\Cookie;
+use HeadlessChromium\Communication\Message;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -63,10 +64,30 @@ class FetchYandexCookies implements ShouldQueue
             $page->navigate('https://fleet.yandex.ru/')->waitForNavigation();
 
             $this->waitForSelector($page, 'a')->click();
-            $page->waitForReload('load', 40000);
-            $this->task->update([
-                'cookies' => 'Go to fleet'
-            ]);
+
+            $start     = microtime(true);
+            $loginPage = null;
+
+            while ((microtime(true) - $start) < 10) {
+                foreach ($browser->getPages() as $p) {
+                    try {
+                        $url = $p->evaluate('location.href')->getReturnValue();
+                        if (str_contains($url, 'passport.yandex')) {
+                            $loginPage = $p;
+                            break 2;
+                        }
+                    } catch (\Throwable) {
+                    }
+                }
+                usleep(200_000);
+            }
+
+            if (!$loginPage) {
+                throw new \RuntimeException('Login tab did not open in 10 s');
+            }
+
+            $page = $loginPage;
+            $page->getSession()->sendMessageSync(new Message('Page.bringToFront'));
 
             # Login
             $this->waitForSelector($page, '#passp-field-login')->click();
