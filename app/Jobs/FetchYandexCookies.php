@@ -76,29 +76,27 @@ class FetchYandexCookies implements ShouldQueue
 //            $login = $this->waitForSelector($page, '#passp-field-login');
 //            $login->click();
             $loginInput = $this->waitForSelector($page, '#passp-field-login', 15000);
-
-// 1) скроллим в зону видимости (бывает off-screen в iframe)
             $page->evaluate('arguments[0].scrollIntoView()', [$loginInput->getNodeId()]);
-
-// 2) даём явный focus() через JS (React его слушает)
             $page->evaluate('arguments[0].focus()', [$loginInput->getNodeId()]);
-
-// 3) на всякий случай очищаем value
             $page->evaluate('arguments[0].value = ""', [$loginInput->getNodeId()]);
 
-            $text = $loginInput->getText();
-            Log::info('login_text_1'.$text);
-// 4) печатаем именно в этот элемент
             $loginInput->sendKeys($this->login);
-            $text = $loginInput->getText();
-//            $page->keyboard()->typeText($this->login);
-            Log::info('login_text_2'.$text);
+
             sleep(5);
 
             # Password
+            $passwordInput = $this->waitForSelector($page, '#passp-field-password', 15000);
+            $page->evaluate('arguments[0].scrollIntoView()', [$passwordInput->getNodeId()]);
+            $page->evaluate('arguments[0].focus()', [$passwordInput->getNodeId()]);
+            $page->evaluate('arguments[0].value = ""', [$passwordInput->getNodeId()]);
+            $text = $passwordInput->getText();
+
+            $passwordInput->sendKeys($this->password);
+
             $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
             $page->keyboard()->press('Enter');
             sleep(5);
+
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
             Log::info('page_text'.$text);
@@ -108,17 +106,27 @@ class FetchYandexCookies implements ShouldQueue
             $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
             sleep(5);
 
+            $element = $page->dom()->querySelector('h1');
+            $text    = $element->getText();
+            Log::info('page_text'.$text);
+
             # SMS
             $this->waitForSelector($page, 'button[data-t="button:action"')->click();
+
+            $element = $page->dom()->querySelector('h1');
+            $text    = $element->getText();
+            Log::info('page_text'.$text);
 
             # Wait until load DOM
             sleep(10);
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
+            Log::info('page_text'.$text);
 
             # If there is ask other way to auth
-            if ($text == 'Введите последние 6&nbsp;цифр входящего номера' or 'Подтвердите кодом из&nbsp;сообщения в&nbsp;Telegram') {
+            if ($text == 'Введите последние 6&nbsp;цифр входящего номера' or 'Подтвердите кодом из&nbsp;сообщения в&nbsp;Telegram' or 'Enter the last 6&nbsp;digits of&nbsp;the calling number' or 'Enter the confirmation code you received in&nbsp;Telegram') {
                 # Wait until can ask other ways to auth
+                Log::info('It gets to FORK');
                 sleep(70);
                 $this->waitForSelector($page, 'button[data-t="button:pseudo"]')->click();
 
@@ -132,6 +140,7 @@ class FetchYandexCookies implements ShouldQueue
                 JS);
                 sleep(5);
             }
+            Log::info('If U see that first, it doesnt');
 
             # SMS input
             $smsInput = $this->waitForSelector($page, '#passp-field-phoneCode', 60000);
