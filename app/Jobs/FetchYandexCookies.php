@@ -74,7 +74,7 @@ class FetchYandexCookies implements ShouldQueue
 
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
-            Log::info('page_text'.$text);
+            Log::info('page_text_1 '.$text);
 
             # Login
 //            $login = $this->waitForSelector($page, '#passp-field-login');
@@ -94,7 +94,7 @@ class FetchYandexCookies implements ShouldQueue
 
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
-            Log::info('page_text'.$text);
+            Log::info('page_text_2_password '.$text);
 
             # Password
             $passwordInput = $this->waitForSelector($page, '#passp-field-password', 15000);
@@ -121,20 +121,20 @@ class FetchYandexCookies implements ShouldQueue
 
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
-            Log::info('page_text'.$text);
+            Log::info('page_text_3 '.$text);
 
             # SMS
             $this->waitForSelector($page, 'button[data-t="button:action"')->click();
 
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
-            Log::info('page_text'.$text);
+            Log::info('page_text_4 '.$text);
 
             # Wait until load DOM
             sleep(10);
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
-            Log::info('page_text'.$text);
+            Log::info('page_text_5 '.$text);
 
             # If there is ask other way to auth
             if ($text == 'Введите последние 6&nbsp;цифр входящего номера' or 'Подтвердите кодом из&nbsp;сообщения в&nbsp;Telegram' or 'Enter the last 6&nbsp;digits of&nbsp;the calling number' or 'Enter the confirmation code you received in&nbsp;Telegram') {
