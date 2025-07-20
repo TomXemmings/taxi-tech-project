@@ -46,16 +46,16 @@ class FetchYandexCookies implements ShouldQueue
             $browser = (new BrowserFactory)->createBrowser([
                 'binary' => '/snap/bin/chromium',
                 'headless' => true,
-                'chromeArguments' => [
-                    '--no-sandbox',
-                    '--disable-setuid-sandbox',
-                    '--user-data-dir=' . sys_get_temp_dir() . '/chrome-' . uniqid(),
-                    '--single-process',
-                    '--renderer-process-limit=1',
-                    '--disable-dev-shm-usage',
-                    '--disable-gpu',
-                    '--no-zygote',
-                ],
+//                'chromeArguments' => [
+//                    '--no-sandbox',
+//                    '--disable-setuid-sandbox',
+//                    '--user-data-dir=' . sys_get_temp_dir() . '/chrome-' . uniqid(),
+//                    '--single-process',
+//                    '--renderer-process-limit=1',
+//                    '--disable-dev-shm-usage',
+//                    '--disable-gpu',
+//                    '--no-zygote',
+//                ],
                 'debugLogger' => 'php://stdout',
             ]);
 
@@ -68,7 +68,6 @@ class FetchYandexCookies implements ShouldQueue
             $loginUrl = $page->evaluate(
                 'document.querySelector("a").href'
             )->getReturnValue();
-
             $page->navigate($loginUrl)->waitForNavigation();
             $page->getSession()->sendMessageSync(new Message('Page.bringToFront'));
             sleep(5);
