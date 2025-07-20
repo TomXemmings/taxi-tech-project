@@ -79,6 +79,7 @@ class FetchYandexCookies implements ShouldQueue
             # Login
             $login = $this->waitForSelector($page, '#passp-field-login');
             $login->click();
+            $page->keyboard()->press('Enter');
 //            $loginInput = $this->waitForSelector($page, '#passp-field-login', 15000);
 //            $page->evaluate('arguments[0].scrollIntoView()', [$loginInput->getNodeId()]);
 //            $page->evaluate('arguments[0].focus()', [$loginInput->getNodeId()]);
