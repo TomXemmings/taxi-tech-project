@@ -117,9 +117,9 @@ class YandexFetchCookies extends Command
 
             # SMS
             $smsInput = $this->waitForSelector($page, '#passp-field-phoneCode', 60000);
-            $smsCode  = $this->ask('Введите SMS-код Яндекса');
+//            $smsCode  = $this->ask('Введите SMS-код Яндекса');
             $smsInput->click();
-            $page->keyboard()->typeText($smsCode)->press('Enter');
+//            $page->keyboard()->typeText($smsCode)->press('Enter');
             $this->info('SMS-код отправлен, ждём подтверждение…');
             $page->waitForReload('load', 30000);
             $this->info('Открыт https://fleet.yandex.ru/');

@@ -18,6 +18,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
 
+use Illuminate\Support\Facades\Artisan;
+use Symfony\Component\Process\Process;
+
 class FetchYandexCookies implements ShouldQueue
 {
     use Queueable;
@@ -38,22 +41,32 @@ class FetchYandexCookies implements ShouldQueue
         $this->task->update(['status' => 'running']);
 
         try {
+            Artisan::call('app:yandex-fetch-cookies', [
+                '--headful'=> false,                 // или true, если нужно окно
+            ]);
+
             # Start browser
-            $browser = (new BrowserFactory(
-                env('CHROME_BIN', 'C:\Program Files\Chromium\chromium.exe')
-            ))->createBrowser([
-                'headless'   => true,
-                'noSandbox'  => true,
-                'windowSize' => [1280, 800],
+            $browser = (new BrowserFactory)->createBrowser([
+                'binary' => '/snap/bin/chromium',
+
+                'headless' => true,
+
+                'chromeArguments' => [
+                    '--user-data-dir=/tmp/chrome-profile',
+                    '--single-process',
+                    '--renderer-process-limit=1',
+                    '--disable-dev-shm-usage',
+                    '--disable-gpu',
+                    '--no-zygote',
+                ],
             ]);
 
             # Create page
             $page = $browser->createPage();
             $page->navigate('https://fleet.yandex.ru/')->waitForNavigation();
-            fwrite(STDOUT, "GO TO FLEET");
 
             $this->waitForSelector($page, 'a')->click();
-//            $page->waitForReload('load', 40000);
+            $page->waitForReload('load', 40000);
             $this->task->update([
                 'cookies' => 'Go to fleet'
             ]);
