@@ -56,15 +56,14 @@ class FetchYandexCookies implements ShouldQueue
                     '--disable-gpu',
                     '--no-zygote',
                 ],
-                'debugLogger' => 'php://stdout',
             ]);
 
             # Create page
             $page = $browser->createPage();
             $page->navigate('https://fleet.yandex.ru/')->waitForNavigation();
-
             $this->waitForSelector($page, 'a')->click();
 
+            # Go to page and check it
             $loginUrl = $page->evaluate(
                 'document.querySelector("a").href'
             )->getReturnValue();
@@ -77,17 +76,14 @@ class FetchYandexCookies implements ShouldQueue
             Log::info('page_text_1 '.$text);
 
             # Login
-//            $login = $this->waitForSelector($page, '#passp-field-login');
-//            $login->click();
-//            $page->keyboard()->press('Enter');
             $loginInput = $this->waitForSelector($page, '#passp-field-login', 15000);
             $page->evaluate('arguments[0].scrollIntoView()', [$loginInput->getNodeId()]);
             $page->evaluate('arguments[0].focus()', [$loginInput->getNodeId()]);
             $page->evaluate('arguments[0].value = ""', [$loginInput->getNodeId()]);
-
             $loginInput->sendKeys($this->login);
             sleep(5);
 
+            # Click Login button
             $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
             $page->keyboard()->press('Enter');
             sleep(5);
@@ -102,25 +98,14 @@ class FetchYandexCookies implements ShouldQueue
             $page->evaluate('arguments[0].focus()', [$passwordInput->getNodeId()]);
             $page->evaluate('arguments[0].value = ""', [$passwordInput->getNodeId()]);
             $text = $passwordInput->getText();
-
             $passwordInput->sendKeys($this->password);
             sleep(5);
-
-//            $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
-//            $page->keyboard()->press('Enter');
-//            sleep(5);
-//
-//            $element = $page->dom()->querySelector('h1');
-//            $text    = $element->getText();
-//            Log::info('page_text'.$text);
-//
-//            $this->waitForSelector($page, '#passp-field-passwd', 60000)->click();
-//            $page->keyboard()->typeText($this->password);
 
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
             Log::info('page_text_3 '.$text);
 
+            # Click password button
             $this->waitForSelector($page, 'button[id="passp:sign-in"]')->click();
             sleep(5);
 
@@ -128,7 +113,7 @@ class FetchYandexCookies implements ShouldQueue
             $text    = $element->getText();
             Log::info('page_text_3 '.$text);
 
-            # SMS
+            # Click SMS button
             $btn = $this->waitForSelector(
                 $page,
                 'button[data-t="button:action"]',
@@ -147,12 +132,6 @@ class FetchYandexCookies implements ShouldQueue
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
             Log::info('page_text_5 '.$text);
-
-//            $allText = $page
-//                ->evaluate('document.documentElement.innerText')
-//                ->getReturnValue();
-//
-//            Log::info('page_text_full '.$allText);
 
             $textPrompts = [
                 'Введите последние 6&nbsp;цифр входящего номера',
@@ -184,7 +163,7 @@ class FetchYandexCookies implements ShouldQueue
             }
             Log::info('If U see that first, it doesnt');
 
-            # SMS input
+            # SMS
             $smsInput = $this->waitForSelector($page, '#passp-field-phoneCode', 60000);
             $smsCode  = $this->getSms($this->phone);
             Log::info($smsCode);
