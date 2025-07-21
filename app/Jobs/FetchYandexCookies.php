@@ -141,6 +141,12 @@ class FetchYandexCookies implements ShouldQueue
             $text    = $element->getText();
             Log::info('page_text_5 '.$text);
 
+            $allText = $page
+                ->evaluate('document.documentElement.innerText')
+                ->getReturnValue();
+
+            Log::info('page_text_full '.$allText);
+
             $textPrompts = [
                 'Введите последние 6&nbsp;цифр входящего номера',
                 'Подтвердите кодом из&nbsp;сообщения в&nbsp;Telegram',
