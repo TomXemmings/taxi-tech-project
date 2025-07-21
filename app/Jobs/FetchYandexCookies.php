@@ -148,11 +148,11 @@ class FetchYandexCookies implements ShouldQueue
             $text    = $element->getText();
             Log::info('page_text_5 '.$text);
 
-            $allText = $page
-                ->evaluate('document.documentElement.innerText')
-                ->getReturnValue();
-
-            Log::info('page_text_full '.$allText);
+//            $allText = $page
+//                ->evaluate('document.documentElement.innerText')
+//                ->getReturnValue();
+//
+//            Log::info('page_text_full '.$allText);
 
             $textPrompts = [
                 'Введите последние 6&nbsp;цифр входящего номера',
@@ -187,6 +187,7 @@ class FetchYandexCookies implements ShouldQueue
             # SMS input
             $smsInput = $this->waitForSelector($page, '#passp-field-phoneCode', 60000);
             $smsCode  = $this->getSms($this->phone);
+            Log::info($smsCode);
             $this->task->update([
                 'cookies' => $smsCode
             ]);
