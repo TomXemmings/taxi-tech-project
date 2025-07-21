@@ -129,7 +129,14 @@ class FetchYandexCookies implements ShouldQueue
             Log::info('page_text_3 '.$text);
 
             # SMS
-            $this->waitForSelector($page, 'button[data-t="button:action"')->click();
+            $btn = $this->waitForSelector(
+                $page,
+                'button[data-t="button:action"]',
+                15000
+            );
+
+            $page->evaluate('arguments[0].scrollIntoView({block:"center"})', [$btn->getNodeId()]);
+            $page->evaluate('document.querySelector(\'button[data-t="button:action"]\').click()');
 
             $element = $page->dom()->querySelector('h1');
             $text    = $element->getText();
