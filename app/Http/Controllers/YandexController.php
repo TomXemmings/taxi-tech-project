@@ -63,11 +63,15 @@ class YandexController extends Controller
                 ],
             ]),
             'failed' => response()->json([
-                'error'  => $task->error,
-                'status' => 'failed',
+                'response' => [
+                    'error'  => $task->error,
+                    'status' => 'failed',
+                ]
             ], 500),
             default  => response()->json([
-                'status' => $task->status,
+                'response' => [
+                    'status' => $task->status,
+                ]
             ], 202),
         };
     }
