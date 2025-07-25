@@ -19,9 +19,9 @@ class YandexController extends Controller
     public function auth(Request $request)
     {
         $data = $request->validate([
-            'data.login'    => 'required|string',
-            'data.password' => 'required|string',
-            'data.phone'    => 'required|string'
+            'data.login'    => 'required',
+            'data.password' => 'required',
+            'data.phone'    => 'required'
         ]);
 
         $task = YandexAuthTask::create();
