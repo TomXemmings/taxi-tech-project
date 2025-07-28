@@ -232,6 +232,7 @@ class FetchYandexCookies implements ShouldQueue
      */
     private function getSms(string $phone)
     {
+        sleep(30);
         $response = Http::acceptJson()
             ->timeout(10)
             ->post(config('services.taxitech.get_sms_url'), [
