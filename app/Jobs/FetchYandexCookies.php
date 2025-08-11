@@ -218,6 +218,10 @@ class FetchYandexCookies implements ShouldQueue
             }
 
             if (microtime(true) - $start > $timeout) {
+                $this->task->update([
+                    'status' => 'failed',
+                    'error'  => 'Need to rewrite script, cause DOM has changed',
+                ]);
                 throw new \RuntimeException("DOM not found with selector: {$selector} in {$timeoutMs} ms");
             }
             usleep(300_000);
